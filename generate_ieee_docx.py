@@ -6,6 +6,8 @@ Strictly follows IEEE layout, typography, sectioning, tables, figures, equations
 """
 
 import os
+import sys
+import re
 import docx
 from docx.shared import Inches, Pt, RGBColor
 from docx.enum.text import WD_ALIGN_PARAGRAPH
@@ -14,8 +16,26 @@ from docx.oxml import parse_xml
 from docx.oxml.ns import nsdecls
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-OUTPUT_PATH = os.path.join(BASE_DIR, "IEEE_RESEARCH_PAPER.docx")
 FIGURES_DIR = os.path.join(BASE_DIR, "figures")
+
+def get_next_research_paper_path(base_dir=BASE_DIR):
+    """
+    Scans base_dir for files matching 'RESEARCH_PAPER *.docx' or 'IEEE_RESEARCH_PAPER *.docx'
+    and returns the next sequential output path: 'RESEARCH_PAPER <N+1>.docx'.
+    Guarantees user versions like 'RESEARCH_PAPER 2.docx' are never overwritten.
+    """
+    pattern = re.compile(r'^(?:RESEARCH_PAPER|IEEE_RESEARCH_PAPER)\s*(\d+)?\.docx$', re.IGNORECASE)
+    highest = 0
+    for fname in os.listdir(base_dir):
+        m = pattern.match(fname)
+        if m:
+            num = int(m.group(1)) if m.group(1) else 1
+            if num > highest:
+                highest = num
+    next_num = max(highest + 1, 3)
+    return os.path.join(base_dir, f"RESEARCH_PAPER {next_num}.docx")
+
+OUTPUT_PATH = get_next_research_paper_path()
 
 def set_cell_background(cell, fill_hex):
     tcPr = cell._tc.get_or_add_tcPr()
@@ -73,7 +93,9 @@ def format_ieee_table(table, col_widths, headers, rows_data):
     borders = parse_xml(f'<w:tblBorders {nsdecls("w")}><w:top w:val="single" w:sz="8" w:space="0" w:color="0F172A"/><w:bottom w:val="single" w:sz="8" w:space="0" w:color="0F172A"/><w:insideH w:val="single" w:sz="4" w:space="0" w:color="E2E8F0"/><w:insideV w:val="none"/><w:left w:val="none"/><w:right w:val="none"/></w:tblBorders>')
     tblPr.append(borders)
 
-def build_ieee_docx(output_path=OUTPUT_PATH):
+def build_ieee_docx(output_path=None):
+    if output_path is None:
+        output_path = get_next_research_paper_path()
     doc = docx.Document()
     
     # Page Setup - Standard Margins (0.75 in top/bottom, 0.75 in left/right)
@@ -596,4 +618,5 @@ def build_ieee_docx(output_path=OUTPUT_PATH):
     print(f"[IEEE-Docx] Successfully generated IEEE research paper Word document at: {output_path}")
 
 if __name__ == "__main__":
-    build_ieee_docx()
+    target = sys.argv[1] if len(sys.argv) > 1 else get_next_research_paper_path()
+    build_ieee_docx(target)

@@ -101,14 +101,13 @@ Decomposing model predictions via cooperative game-theoretic Shapley values veri
 ## 📂 Repository File Structure
 
 ```text
-├── IEEE_RESEARCH_PAPER.docx      # Production Word Document formatted to IEEE standards
-├── IEEE_RESEARCH_PAPER 1.docx    # Formatted two-column IEEE Word document
+├── RESEARCH_PAPER 2.docx         # Active manuscript (User-formatted 2-column IEEE Word document)
 ├── IEEE_RESEARCH_PAPER.tex       # Complete IEEEtran LaTeX source code
 ├── IEEE_RESEARCH_PAPER.md        # Academic Markdown manuscript
-├── generate_ieee_docx.py         # Autonomous Python script to regenerate .docx
+├── generate_ieee_docx.py         # Autonomous Python generator (auto-increments to RESEARCH_PAPER <N+1>.docx)
 ├── LICENSE                       # Open-source MIT License
 ├── README.md                     # Repository documentation & publication guide
-├── Research Docs/                # Working research documents & archives
+├── Research Docs/                # Working research archives & previous iterations
 │   ├── IEEE_RESEARCH_PAPER.docx
 │   └── IEEE_RESEARCH_PAPER 1.docx
 └── figures/                      # High-resolution publication charts
@@ -147,8 +146,8 @@ The manuscript incorporates and synthesizes 34 peer-reviewed studies across lead
 ## 🛠️ Compilation & Usage Instructions
 
 ### 1. Microsoft Word (.docx)
-* Open [`IEEE_RESEARCH_PAPER.docx`](./IEEE_RESEARCH_PAPER.docx) directly in Microsoft Word or LibreOffice.
-* To regenerate the document programmatically with updated parameters or styles:
+* Open [`RESEARCH_PAPER 2.docx`](./RESEARCH_PAPER%202.docx) directly in Microsoft Word or LibreOffice.
+* To regenerate the document programmatically with updated parameters or styles (auto-increments to `RESEARCH_PAPER <N+1>.docx`):
   ```bash
   python generate_ieee_docx.py
   ```
