@@ -9,6 +9,8 @@ import os
 import sys
 import re
 import docx
+import latex2mathml.converter
+import lxml.etree as etree
 from docx.shared import Inches, Pt, RGBColor
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.enum.table import WD_TABLE_ALIGNMENT, WD_ALIGN_VERTICAL
@@ -17,6 +19,19 @@ from docx.oxml.ns import nsdecls
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 FIGURES_DIR = os.path.join(BASE_DIR, "figures")
+XSL_PATH = r"C:\Program Files\Microsoft Office\root\Office16\MML2OMML.XSL"
+_xslt_transform = etree.XSLT(etree.parse(XSL_PATH)) if os.path.exists(XSL_PATH) else None
+
+def latex_to_omml(latex_str):
+    if _xslt_transform is None:
+        return None
+    m_xml = latex2mathml.converter.convert(latex_str)
+    dom = etree.fromstring(m_xml)
+    omml = _xslt_transform(dom)
+    omml_str = etree.tostring(omml).decode('utf-8')
+    if omml_str.startswith('<?xml'):
+        omml_str = omml_str.split('?>', 1)[1].strip()
+    return parse_xml(omml_str)
 
 def get_next_research_paper_path(base_dir=BASE_DIR):
     """
@@ -226,15 +241,25 @@ def build_ieee_docx(output_path=None):
         r_body.font.color.rgb = RGBColor(0x1E, 0x29, 0x3B)
         return p
 
-    def add_equation(eq_text, eq_num):
+    def add_equation(latex_str, eq_num):
         p = doc.add_paragraph()
         p.alignment = WD_ALIGN_PARAGRAPH.CENTER
         p.paragraph_format.space_before = Pt(4)
         p.paragraph_format.space_after = Pt(6)
-        r_eq = p.add_run(eq_text)
-        r_eq.font.name = "Cambria Math"
-        r_eq.font.size = Pt(10)
-        r_eq.italic = True
+        try:
+            omml_elem = latex_to_omml(latex_str)
+            if omml_elem is not None:
+                p._p.append(omml_elem)
+            else:
+                r_eq = p.add_run(latex_str)
+                r_eq.font.name = "Cambria Math"
+                r_eq.font.size = Pt(10)
+                r_eq.italic = True
+        except Exception:
+            r_eq = p.add_run(latex_str)
+            r_eq.font.name = "Cambria Math"
+            r_eq.font.size = Pt(10)
+            r_eq.italic = True
         r_num = p.add_run(f"\t\t\t({eq_num})")
         r_num.font.name = "Times New Roman"
         r_num.font.size = Pt(10)
@@ -286,7 +311,7 @@ def build_ieee_docx(output_path=None):
         "retrieve methane column enhancements by exploiting characteristic absorption doublets in the 2.1 - 2.4 µm SWIR spectral window. Using matched-filter and optical flow "
         "retrieval algorithms, emission flux rates (Q, in kg/hr) are derived using the Integrated Methane Enhancement (IME) method:"
     )
-    add_equation("Q = (IME / L) · U_eff", 1)
+    add_equation(r"Q = \frac{\text{IME}}{L} \cdot U_{\text{eff}}", 1)
     add_body_p(
         "where IME denotes the integrated plume mass, L is the characteristic plume length, and U_eff is the effective advective wind velocity [15]. "
         "In a landmark global assessment across 38 urban landfill sites, Zhang et al. [10] synthesized multi-sensor EMIT, EnMAP, and PRISMA retrievals, documenting cumulative point-source "
@@ -370,18 +395,18 @@ def build_ieee_docx(output_path=None):
         "tracking 9 criteria pollutants and 7 micrometeorological parameters.\n"
         "3) Data Sanitization and Imputation: Missing observations were imputed via bounded bi-directional linear interpolation (k ≤ 16 steps):"
     )
-    add_equation("x̂_t = x_t1 + [(t - t1)/(t2 - t1)] · (x_t2 - x_t1), ∀ t ∈ (t1, t2)", 2)
+    add_equation(r"\hat{x}_t = x_{t_1} + \frac{t - t_1}{t_2 - t_1} (x_{t_2} - x_{t_1}), \quad \forall t \in (t_1, t_2)", 2)
 
     add_section_h2("B. Physics-Informed Feature Engineering")
     add_body_p("Following PIML principles [23], [24]:\n1) Trigonometric Wind Velocity Vectors: We project wind speed (WS) and direction (WD) into orthogonal Cartesian velocity vectors (u, v):")
-    add_equation("u = -WS · sin(π · WD / 180),  v = -WS · cos(π · WD / 180)", 3)
+    add_equation(r"u = -\text{WS} \cdot \sin\left(\frac{\pi \cdot \text{WD}}{180}\right), \quad v = -\text{WS} \cdot \cos\left(\frac{\pi \cdot \text{WD}}{180}\right)", 3)
     add_body_p("2) Ghazipur Geometric Plume Alignment Index: With source azimuth θ_src ≈ 130.0°, angular difference Δθ and half-wave rectified alignment index are:")
-    add_equation("Δθ = min(|WD - 130.0°|, 360.0° - |WD - 130.0°|)", 4)
-    add_equation("Alignment Index = max(0, cos(π · Δθ / 180))", 5)
+    add_equation(r"\Delta\theta = \min\left( |\text{WD} - 130.0^\circ|,\; 360.0^\circ - |\text{WD} - 130.0^\circ| \right)", 4)
+    add_equation(r"\text{Alignment Index} = \max\left( 0,\; \cos\left(\frac{\pi \cdot \Delta\theta}{180}\right) \right)", 5)
     add_body_p("3) Atmospheric Stagnation Severity Index:")
-    add_equation("Dispersion Index = Alignment Index · exp(-0.25 · WS)", 6)
+    add_equation(r"\text{Dispersion Index} = \text{Alignment Index} \cdot \exp( -0.25 \cdot \text{WS} )", 6)
     add_body_p("4) Planetary Boundary Layer Ventilation Proxy:")
-    add_equation("Ventilation Index Proxy = [WS · (T_ambient + 273.15)] / (P_barometric + ε)", 7)
+    add_equation(r"\text{Ventilation Index Proxy} = \frac{\text{WS} \cdot (T_{\text{ambient}} + 273.15)}{P_{\text{barometric}} + \epsilon}", 7)
     add_body_p(
         "5) Autoregressive Lags and Rolling Windows: Lag steps k ∈ {1, 2, 4, 12, 24} (representing 15m, 30m, 1h, 3h, 6h) "
         "and backward-looking rolling statistics (mean 3h/6h, std 3h) provide temporal momentum.\n"
@@ -397,8 +422,8 @@ def build_ieee_docx(output_path=None):
 
     add_section_h2("D. Explainable AI: Game-Theoretic TreeSHAP Formulation")
     add_body_p("Feature attributions are derived using Shapley values satisfying local efficiency [30]:")
-    add_equation("φ_i(f, x) = ∑ [|S|!(|F| - |S| - 1)! / |F|!] · [f_x(S ∪ {i}) - f_x(S)]", 8)
-    add_equation("f(x) = φ_0(f) + ∑ φ_i(f, x)", 9)
+    add_equation(r"\phi_i(f, x) = \sum_{S \subseteq F \setminus \{i\}} \frac{|S|!(|F| - |S| - 1)!}{|F|!} [f_x(S \cup \{i\}) - f_x(S)]", 8)
+    add_equation(r"f(x) = \phi_0(f) + \sum_{i=1}^{|F|} \phi_i(f, x)", 9)
 
     # IV. RESULT AND DEPLOYMENT
     add_section_h1("IV. Result and Deployment")
