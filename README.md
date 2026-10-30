@@ -1,6 +1,7 @@
 # 📄 LandfillPlume-AI: Satellite-Ground Sensor Fusion for Hazardous Gas Forecasting and Early-Warning
 
 [![IEEE Conference](https://img.shields.io/badge/Format-IEEE%20Transactions%20%2F%20Conference-blue.svg)](https://www.ieee.org/)
+[![PDF: Ready](https://img.shields.io/badge/PDF-Manuscript%20Ready-red.svg)](./RESEARCH_PAPER.pdf)
 [![LaTeX: Overleaf Ready](https://img.shields.io/badge/LaTeX-Overleaf%20Ready-green.svg)](https://www.overleaf.com/)
 [![Word: .docx](https://img.shields.io/badge/MS%20Word-.docx%20Generated-orange.svg)](./IEEE_RESEARCH_PAPER.docx)
 [![Python: 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
@@ -101,6 +102,7 @@ Decomposing model predictions via cooperative game-theoretic Shapley values veri
 ## 📂 Repository File Structure
 
 ```text
+├── RESEARCH_PAPER.pdf          # Final compiled publication PDF
 ├── RESEARCH_PAPER 3.docx         # Active manuscript (Native LaTeX Office Math equations, 2-column IEEE format, 34 citations)
 ├── IEEE_RESEARCH_PAPER.tex       # Complete IEEEtran LaTeX source code
 ├── IEEE_RESEARCH_PAPER.md        # Academic Markdown manuscript
