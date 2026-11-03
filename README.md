@@ -102,19 +102,22 @@ Decomposing model predictions via cooperative game-theoretic Shapley values veri
 ## 📂 Repository File Structure
 
 ```text
-├── RESEARCH_PAPER.pdf          # Final compiled publication PDF
-├── RESEARCH_PAPER 3.docx         # Active manuscript (Native LaTeX Office Math equations, 2-column IEEE format, 34 citations)
-├── IEEE_RESEARCH_PAPER.tex       # Complete IEEEtran LaTeX source code
-├── IEEE_RESEARCH_PAPER.md        # Academic Markdown manuscript
-├── generate_ieee_docx.py         # Autonomous Python generator (with native LaTeX OMML conversion)
-├── LICENSE                       # Open-source MIT License
-├── README.md                     # Repository documentation & publication guide
-├── Research Docs/                # Working research archives & previous iterations
-│   ├── RESEARCH_PAPER 2.docx     # User-formatted 2-column milestone
+├── RESEARCH_PAPER.pdf                  # Final compiled publication PDF
+├── RESEARCH_PAPER 3.docx               # Active manuscript (Native LaTeX Office Math equations, 2-column IEEE format, 34 citations)
+├── RESEARCH_PHRASES_SIMPLIFIED_GUIDE.docx # Plain-English viva defense & concepts translation guide (.docx)
+├── RESEARCH_PHRASES_SIMPLIFIED_GUIDE.md   # Plain-English viva defense & concepts translation guide (Markdown)
+├── generate_simplified_guide.py        # Python script to regenerate the simplified concepts guide
+├── IEEE_RESEARCH_PAPER.tex             # Complete IEEEtran LaTeX source code
+├── IEEE_RESEARCH_PAPER.md              # Academic Markdown manuscript
+├── generate_ieee_docx.py               # Autonomous Python generator (with native LaTeX OMML conversion)
+├── LICENSE                             # Open-source MIT License
+├── README.md                           # Repository documentation & publication guide
+├── Research Docs/                      # Working research archives & previous iterations
+│   ├── RESEARCH_PAPER 2.docx           # User-formatted 2-column milestone
 │   ├── RESEARCH_PAPER 2_backup.docx
 │   ├── IEEE_RESEARCH_PAPER 1.docx
 │   └── IEEE_RESEARCH_PAPER.docx
-└── figures/                      # High-resolution publication charts
+└── figures/                            # High-resolution publication charts
     ├── ghazipur_downwind_impact.png
     ├── diurnal_pollutant_trends.png
     ├── shap_summary_plot.png
