@@ -114,16 +114,26 @@ def build_documents():
     topics = [
         {
             "num": "1",
+            "phrase": "Physics-Informed Machine Learning (PIML) & Physics-Informed Feature Engineering",
+            "where": "Title, Abstract, Section II-C, and Section III-B",
+            "plain": "Teaching real-world laws of nature (fluid dynamics, geography, and thermodynamics) to a machine learning model instead of letting it guess purely from random spreadsheet numbers.",
+            "analogy": "Imagine teaching a child to catch an apple falling from a tree:\n• A 'Pure Black-Box AI' watches 10,000 video clips of falling apples and memorizes pixel patterns. If you drop the apple on a windy day or on a hill, it gets completely confused because it has no idea gravity exists!\n• A 'Physics-Informed AI (PIML)' is already given the law of gravity (g = 9.8 m/s²) and wind resistance formulas. The AI only has to learn the small, unpredictable flutter of the leaves.\nIn our project, we didn't just give the AI raw temperatures and wind numbers; we hardcoded atmospheric advection, compass geometry, and nocturnal thermal inversion formulas into the features.",
+            "math": "Traditional Pure-Data ML: Y = f(X_raw) where X_raw = [Temp, Humidity, WindSpeed, WindDirection].\nPhysics-Informed ML (PIML) Formulation (Karniadakis et al., Nature Reviews Physics, 2021):\nY = f(X_raw, Φ_physics(X))\nWhere Φ_physics embeds governing transport equations:\n1. Advection Conservation: (u, v) = (-WS*sin(WD), -WS*cos(WD))\n2. Geographic Plume Vector: cos(WD - 130°)\n3. Boundary Stagnation: Alignment * exp(-0.25*WS)\n4. Ventilation Volume: [WS * (T + 273.15)] / (P + ε)",
+            "why": "Pure machine learning models suffer from 'physical hallucinations'—for example, predicting a massive toxic gas spike when the wind is blowing backward away from the landfill, or failing to predict nighttime choking episodes because vehicle traffic is zero. PIML forces the AI to obey physical reality.",
+            "viva": "Examiner: 'What exactly makes your project Physics-Informed Machine Learning (PIML) rather than standard machine learning?'\nAnswer: 'Standard machine learning treats environmental sensor data as arbitrary tabular numbers with no awareness of spatial geography or fluid dynamics. Following the PIML paradigm of Karniadakis et al. (2021), we embedded governing principles of atmospheric advection and boundary-layer thermodynamics directly into our feature representation. We projected polar wind angles into orthogonal Cartesian velocity vectors (u, v) to eliminate circular discontinuities, formulated a half-wave rectified geometric alignment vector centered on Ghazipur's 130° azimuth, and constructed stagnation proxies. This physically constrained our models, preventing unphysical hallucinations and achieving R² = 0.9293.'"
+        },
+        {
+            "num": "2",
             "phrase": "Cartesian Wind Vector Components (u, v)",
             "where": "Abstract & Section III-B (Physics-Informed Feature Engineering)",
             "plain": "Converting standard weather wind reports (like 'Wind from 135° at 2 m/s') into simple horizontal 'Left/Right' (East/West) and 'Up/Down' (North/South) speeds.",
-            "analogy": "Imagine walking on a circle track. Degree 359° is one step before Degree 0°. They are right next to each other! But to a computer reading numbers, 359 and 0 look completely opposite. If you tell a robot to make a cut, it gets confused. By splitting wind into 'East-West speed (u)' and 'North-South speed (v)', the speed numbers change smoothly with no sudden jumps.",
+            "analogy": "Imagine walking on a circular running track. Degree 359° is one step before Degree 0°. They are right next to each other! But to a computer reading numbers, 359 and 0 look completely opposite. If you tell a robot to make a cut, it gets confused. By splitting wind into 'East-West speed (u)' and 'North-South speed (v)', the speed numbers change smoothly with no sudden jumps.",
             "math": "u = -WS * sin(π * WD / 180)  [East-West speed]\nv = -WS * cos(π * WD / 180)  [North-South speed]\n(The minus sign is standard meteorology because wind direction is where the wind COMES FROM, not where it is heading).",
             "why": "Standard Decision Trees (Random Forest, XGBoost) fail badly when dealing with angles near 360°/0°. Decomposing into u and v eliminates this 'circular wrap-around discontinuity' and gives models realistic fluid motion physics.",
             "viva": "Examiner: 'Why did you decompose wind into u and v instead of feeding wind direction directly?'\nAnswer: 'Wind direction has a circular boundary problem where 360° and 0° are physically identical but mathematically far apart. Tree models create artificial splits at boundary thresholds. Projecting wind into Cartesian orthogonal vectors (u, v) creates smooth, continuous numerical features that reflect actual atmospheric fluid advection.'"
         },
         {
-            "num": "2",
+            "num": "3",
             "phrase": "130.0° Geometric Plume Alignment Index",
             "where": "Abstract & Section III-B (Physics-Informed Feature Engineering)",
             "plain": "A custom score from 0.0 to 1.0 that answers one simple question: 'Is the wind blowing directly from the Ghazipur garbage dump toward our monitoring station right now?'",
@@ -133,7 +143,7 @@ def build_documents():
             "viva": "Examiner: 'What is this 130.0° index and how did you choose 130°?'\nAnswer: '130° is the precise geographic azimuth from the DPCC Anand Vihar sensor station back to the Ghazipur landfill centroid (2.8 km away). The alignment index uses cosine similarity to quantify how directly the wind vector aligns with this corridor, giving our models an explicit physical indicator of landfill plume advection.'"
         },
         {
-            "num": "3",
+            "num": "4",
             "phrase": "Atmospheric Ventilation and Stagnation Proxies",
             "where": "Abstract, Section III-B, and Section IV-A",
             "plain": "Formulas that calculate whether toxic air is blowing away or trapped like a poison bubble over neighborhoods because the air is still and heavy.",
@@ -143,7 +153,7 @@ def build_documents():
             "viva": "Examiner: 'Why do you need a stagnation proxy if the model already has wind speed as an input?'\nAnswer: 'Atmospheric dispersion is non-linear. High concentrations occur through the multiplicative interaction of direct plume alignment and low ventilation volume. The stagnation proxy combines alignment and aerodynamic attenuation into a single physics-informed proxy, avoiding recursive lead-time error in gradient boosters.'"
         },
         {
-            "num": "4",
+            "num": "5",
             "phrase": "Real-Time Local SHAP Waterfall Decomposition",
             "where": "Abstract, Section III-D, and Web Dashboard",
             "plain": "A step-by-step breakdown receipt that shows exactly why the AI predicted a specific number right now (e.g., 'Base average is 40 µg/m³; +18 µg/m³ because wind is from Ghazipur; +12 µg/m³ because it's 3 AM; -5 µg/m³ because humidity is low -> Final Forecast: 65 µg/m³').",
@@ -153,7 +163,7 @@ def build_documents():
             "viva": "Examiner: 'What is a SHAP waterfall plot and why did you use it?'\nAnswer: 'TreeSHAP decomposes a single tree-ensemble prediction into additive Shapley values. The waterfall plot visually shows the step-by-step transition from the dataset base expectation to the current output, explicitly quantifying how much the Ghazipur alignment, thermal inversion, and lag momentum pushed the forecast up or down.'"
         },
         {
-            "num": "5",
+            "num": "6",
             "phrase": "Satellite-Ground Sensor Fusion (Multimodal Telemetry)",
             "where": "Title, Abstract, and Section III-A",
             "plain": "Combining space satellite cameras that take big pictures once every few weeks with ground sensors on street poles that take measurements every 15 minutes.",
@@ -163,7 +173,7 @@ def build_documents():
             "viva": "Examiner: 'How did you fuse satellite data with ground data given their vast difference in revisit times?'\nAnswer: 'Satellites provide episodic point-source emission rates (Q in kg/hr) that calibrate and validate our physical dispersion vectors, while ground CAAQMS stations provide the high-frequency 15-minute time-series for continuous ML training. This decoupled spatial source verification from real-time temporal forecasting.'"
         },
         {
-            "num": "6",
+            "num": "7",
             "phrase": "Methane Super-Emitters & Integrated Methane Enhancement (IME)",
             "where": "Abstract & Section II-A",
             "plain": "A 'super-emitter' is a single place (like Ghazipur) that leaks an enormous, absurd amount of gas. 'IME' is the math formula used by NASA satellites to weigh the toxic cloud from space.",
@@ -173,7 +183,7 @@ def build_documents():
             "viva": "Examiner: 'What is the IME method and why is it significant?'\nAnswer: 'Integrated Methane Enhancement integrates the total enhanced methane column mass retrieved by imaging spectrometers above background levels. Dividing by the plume length and multiplying by advective wind velocity yields an empirical mass flux rate (kg/hr), revealing that Ghazipur emits up to 4,890 kg/hr—vastly higher than static inventory assumptions.'"
         },
         {
-            "num": "7",
+            "num": "8",
             "phrase": "Nocturnal Planetary Boundary Layer Trapping & Thermal Inversion",
             "where": "Abstract, Section II-B, and Section IV-A",
             "plain": "Why air pollution is at its worst while you sleep (between 2:00 AM and 6:00 AM) rather than during daytime rush-hour traffic.",
@@ -183,7 +193,7 @@ def build_documents():
             "viva": "Examiner: 'Why does your paper claim the highest pollution occurs at night instead of peak daytime traffic?'\nAnswer: 'Surface radiational cooling under calm nocturnal winds compresses the planetary boundary layer to below 300 meters, forming a thermal inversion lid over the 65m dumpsite. Without solar convective mixing, continuous anaerobic landfill emissions are trapped in the lowest air layer, causing ammonia concentrations to peak at 79.8 µg/m³ between 02:00 and 06:00 IST.'"
         },
         {
-            "num": "8",
+            "num": "9",
             "phrase": "Collinear Ridge Regression vs. Gradient Boosted Trees",
             "where": "Section III-C & Section IV-B",
             "plain": "Why a simple, regularized math line (Ridge Regression) beat advanced fancy algorithms like XGBoost and LightGBM when predicting Ammonia and Benzene.",
@@ -193,7 +203,7 @@ def build_documents():
             "viva": "Examiner: 'Why did Ridge Regression outperform complex gradient boosted trees for Benzene and Ammonia?'\nAnswer: 'Volatile aromatic hydrocarbons and ammonia exhibit high multicollinearity with meteorological variables. Gradient boosting decision trees overfit to micro-turbulent eddies in the training sequence. L2-regularized Ridge regression penalizes large coefficient magnitudes, providing superior out-of-time generalization on collinear advective features.'"
         },
         {
-            "num": "9",
+            "num": "10",
             "phrase": "Persona-Adaptive Vulnerability Multipliers & Clean-Air Micro-Routing",
             "where": "Section IV-C & Web Dashboard (Health Alert)",
             "plain": "Instead of telling an entire city 'Air is Bad', the system gives personalized health warnings (e.g. an asthmatic child gets an emergency alarm earlier than a healthy athlete) and gives turn-by-turn map directions to walk away from the poison plume toward clean green parks.",
@@ -203,7 +213,7 @@ def build_documents():
             "viva": "Examiner: 'How does your clinical routing engine reduce exposure by 88% to 94%?'\nAnswer: 'Landfill plumes follow a narrow Gaussian downwind dispersion corridor (110°–150° SE). By projecting active wind vectors in real time, our A* routing engine navigates pedestrians perpendicular to the plume axis into crosswind or upwind micro-environments—such as the Akshardham Yamuna green belt—cutting inhaled toxic dosage by up to 94%.'"
         },
         {
-            "num": "10",
+            "num": "11",
             "phrase": "Chronological Out-of-Time Train-Test Partition (No Data Leakage)",
             "where": "Section III-C & Table III",
             "plain": "Testing the AI strictly on the future (the last 2 months of the year) after training only on the past (the first 10 months), rather than mixing random days together.",

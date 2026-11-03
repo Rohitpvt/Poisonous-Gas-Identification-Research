@@ -4,14 +4,49 @@
 
 ---
 
-## 📌 Phrase #1: Cartesian Wind Vector Components (u, v)
+## 📌 Phrase #1: Physics-Informed Machine Learning (PIML) & Physics-Informed Feature Engineering
+**Paper Section**: *Title, Abstract, Section II-C, and Section III-B*
+
+### 💡 1. In Plain English (The 30-Second Summary)
+Teaching real-world laws of nature (fluid dynamics, geography, and thermodynamics) to a machine learning model instead of letting it guess purely from random spreadsheet numbers.
+
+### 🚗 2. Real-World Everyday Analogy
+> Imagine teaching a child to catch an apple falling from a tree:
+• A 'Pure Black-Box AI' watches 10,000 video clips of falling apples and memorizes pixel patterns. If you drop the apple on a windy day or on a hill, it gets completely confused because it has no idea gravity exists!
+• A 'Physics-Informed AI (PIML)' is already given the law of gravity (g = 9.8 m/s²) and wind resistance formulas. The AI only has to learn the small, unpredictable flutter of the leaves.
+In our project, we didn't just give the AI raw temperatures and wind numbers; we hardcoded atmospheric advection, compass geometry, and nocturnal thermal inversion formulas into the features.
+
+### 📐 3. The Math & Physics Behind It
+```text
+Traditional Pure-Data ML: Y = f(X_raw) where X_raw = [Temp, Humidity, WindSpeed, WindDirection].
+Physics-Informed ML (PIML) Formulation (Karniadakis et al., Nature Reviews Physics, 2021):
+Y = f(X_raw, Φ_physics(X))
+Where Φ_physics embeds governing transport equations:
+1. Advection Conservation: (u, v) = (-WS*sin(WD), -WS*cos(WD))
+2. Geographic Plume Vector: cos(WD - 130°)
+3. Boundary Stagnation: Alignment * exp(-0.25*WS)
+4. Ventilation Volume: [WS * (T + 273.15)] / (P + ε)
+```
+
+### ⚠️ 4. Why We Needed It (What breaks without it?)
+Pure machine learning models suffer from 'physical hallucinations'—for example, predicting a massive toxic gas spike when the wind is blowing backward away from the landfill, or failing to predict nighttime choking episodes because vehicle traffic is zero. PIML forces the AI to obey physical reality.
+
+### 🎓 5. What to Say to an Examiner or Mentor (Viva Defense)
+```markdown
+Examiner: 'What exactly makes your project Physics-Informed Machine Learning (PIML) rather than standard machine learning?'
+Answer: 'Standard machine learning treats environmental sensor data as arbitrary tabular numbers with no awareness of spatial geography or fluid dynamics. Following the PIML paradigm of Karniadakis et al. (2021), we embedded governing principles of atmospheric advection and boundary-layer thermodynamics directly into our feature representation. We projected polar wind angles into orthogonal Cartesian velocity vectors (u, v) to eliminate circular discontinuities, formulated a half-wave rectified geometric alignment vector centered on Ghazipur's 130° azimuth, and constructed stagnation proxies. This physically constrained our models, preventing unphysical hallucinations and achieving R² = 0.9293.'
+```
+
+---
+
+## 📌 Phrase #2: Cartesian Wind Vector Components (u, v)
 **Paper Section**: *Abstract & Section III-B (Physics-Informed Feature Engineering)*
 
 ### 💡 1. In Plain English (The 30-Second Summary)
 Converting standard weather wind reports (like 'Wind from 135° at 2 m/s') into simple horizontal 'Left/Right' (East/West) and 'Up/Down' (North/South) speeds.
 
 ### 🚗 2. Real-World Everyday Analogy
-> Imagine walking on a circle track. Degree 359° is one step before Degree 0°. They are right next to each other! But to a computer reading numbers, 359 and 0 look completely opposite. If you tell a robot to make a cut, it gets confused. By splitting wind into 'East-West speed (u)' and 'North-South speed (v)', the speed numbers change smoothly with no sudden jumps.
+> Imagine walking on a circular running track. Degree 359° is one step before Degree 0°. They are right next to each other! But to a computer reading numbers, 359 and 0 look completely opposite. If you tell a robot to make a cut, it gets confused. By splitting wind into 'East-West speed (u)' and 'North-South speed (v)', the speed numbers change smoothly with no sudden jumps.
 
 ### 📐 3. The Math & Physics Behind It
 ```text
@@ -31,7 +66,7 @@ Answer: 'Wind direction has a circular boundary problem where 360° and 0° are 
 
 ---
 
-## 📌 Phrase #2: 130.0° Geometric Plume Alignment Index
+## 📌 Phrase #3: 130.0° Geometric Plume Alignment Index
 **Paper Section**: *Abstract & Section III-B (Physics-Informed Feature Engineering)*
 
 ### 💡 1. In Plain English (The 30-Second Summary)
@@ -60,7 +95,7 @@ Answer: '130° is the precise geographic azimuth from the DPCC Anand Vihar senso
 
 ---
 
-## 📌 Phrase #3: Atmospheric Ventilation and Stagnation Proxies
+## 📌 Phrase #4: Atmospheric Ventilation and Stagnation Proxies
 **Paper Section**: *Abstract, Section III-B, and Section IV-A*
 
 ### 💡 1. In Plain English (The 30-Second Summary)
@@ -88,7 +123,7 @@ Answer: 'Atmospheric dispersion is non-linear. High concentrations occur through
 
 ---
 
-## 📌 Phrase #4: Real-Time Local SHAP Waterfall Decomposition
+## 📌 Phrase #5: Real-Time Local SHAP Waterfall Decomposition
 **Paper Section**: *Abstract, Section III-D, and Web Dashboard*
 
 ### 💡 1. In Plain English (The 30-Second Summary)
@@ -115,7 +150,7 @@ Answer: 'TreeSHAP decomposes a single tree-ensemble prediction into additive Sha
 
 ---
 
-## 📌 Phrase #5: Satellite-Ground Sensor Fusion (Multimodal Telemetry)
+## 📌 Phrase #6: Satellite-Ground Sensor Fusion (Multimodal Telemetry)
 **Paper Section**: *Title, Abstract, and Section III-A*
 
 ### 💡 1. In Plain English (The 30-Second Summary)
@@ -140,7 +175,7 @@ Answer: 'Satellites provide episodic point-source emission rates (Q in kg/hr) th
 
 ---
 
-## 📌 Phrase #6: Methane Super-Emitters & Integrated Methane Enhancement (IME)
+## 📌 Phrase #7: Methane Super-Emitters & Integrated Methane Enhancement (IME)
 **Paper Section**: *Abstract & Section II-A*
 
 ### 💡 1. In Plain English (The 30-Second Summary)
@@ -169,7 +204,7 @@ Answer: 'Integrated Methane Enhancement integrates the total enhanced methane co
 
 ---
 
-## 📌 Phrase #7: Nocturnal Planetary Boundary Layer Trapping & Thermal Inversion
+## 📌 Phrase #8: Nocturnal Planetary Boundary Layer Trapping & Thermal Inversion
 **Paper Section**: *Abstract, Section II-B, and Section IV-A*
 
 ### 💡 1. In Plain English (The 30-Second Summary)
@@ -195,7 +230,7 @@ Answer: 'Surface radiational cooling under calm nocturnal winds compresses the p
 
 ---
 
-## 📌 Phrase #8: Collinear Ridge Regression vs. Gradient Boosted Trees
+## 📌 Phrase #9: Collinear Ridge Regression vs. Gradient Boosted Trees
 **Paper Section**: *Section III-C & Section IV-B*
 
 ### 💡 1. In Plain English (The 30-Second Summary)
@@ -222,7 +257,7 @@ Answer: 'Volatile aromatic hydrocarbons and ammonia exhibit high multicollineari
 
 ---
 
-## 📌 Phrase #9: Persona-Adaptive Vulnerability Multipliers & Clean-Air Micro-Routing
+## 📌 Phrase #10: Persona-Adaptive Vulnerability Multipliers & Clean-Air Micro-Routing
 **Paper Section**: *Section IV-C & Web Dashboard (Health Alert)*
 
 ### 💡 1. In Plain English (The 30-Second Summary)
@@ -249,7 +284,7 @@ Answer: 'Landfill plumes follow a narrow Gaussian downwind dispersion corridor (
 
 ---
 
-## 📌 Phrase #10: Chronological Out-of-Time Train-Test Partition (No Data Leakage)
+## 📌 Phrase #11: Chronological Out-of-Time Train-Test Partition (No Data Leakage)
 **Paper Section**: *Section III-C & Table III*
 
 ### 💡 1. In Plain English (The 30-Second Summary)
